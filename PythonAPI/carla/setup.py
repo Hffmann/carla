@@ -100,21 +100,20 @@ def get_libcarla_extensions():
         else:
             raise NotImplementedError
     elif os.name == "nt":
-        sources += [x for x in walk('dependencies/include/carla', '*.cpp')]
-
         pwd = os.path.dirname(os.path.realpath(__file__))
         pylib = 'libboost_python%d%d' % (
             sys.version_info.major,
             sys.version_info.minor)
 
-        extra_link_args = ['shlwapi.lib', 'Advapi32.lib']
+        extra_link_args = ['shlwapi.lib', 'Advapi32.lib', 'ole32.lib', 'shell32.lib']
 
         required_libs = [
             pylib, 'libboost_filesystem',
             'rpc.lib', 'carla_client.lib',
             'libpng.lib', 'zlib.lib',
             'Recast.lib', 'Detour.lib', 'DetourCrowd.lib',
-            'osm2odr.lib', 'xerces-c_3.lib']
+            'xerces-c_3.lib', 'sqlite3.lib',
+            'proj.lib', 'osm2odr.lib']
 
         # Search for files in 'PythonAPI\carla\dependencies\lib' that contains
         # the names listed in required_libs in it's file name

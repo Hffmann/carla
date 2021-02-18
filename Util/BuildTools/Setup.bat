@@ -30,6 +30,7 @@ set VERSION_FILE=%ROOT_PATH:/=\%Util\ContentVersions.txt
 set CONTENT_DIR=%ROOT_PATH:/=\%Unreal\CarlaUE4\Content\Carla\
 set CARLA_DEPENDENCIES_FOLDER=%ROOT_PATH:/=\%Unreal\CarlaUE4\Plugins\Carla\CarlaDependencies\
 set CARLA_BINARIES_FOLDER=%ROOT_PATH:/=\%Unreal\CarlaUE4\Plugins\Carla\Binaries\Win64
+set CARLA_PYTHON_DEPENDENCIES=%ROOT_PATH:/=\%PythonAPI\carla\dependencies\
 set USE_CHRONO=false
 
 :arg-parse
@@ -185,12 +186,30 @@ copy /Y "%INSTALLATION_DIR%..\Util\BoostFiles\rational.hpp" "%INSTALLATION_DIR%b
 copy /Y "%INSTALLATION_DIR%..\Util\BoostFiles\read.hpp" "%INSTALLATION_DIR%boost-%BOOST_VERSION%-install\include\boost\geometry\io\wkt\read.hpp"
 
 rem ============================================================================
-rem -- Download and install Xercesc ----------------------------------------------
+rem -- Download and install Xercesc --------------------------------------------
 rem ============================================================================
 
 echo %FILE_N% Installing Xercesc...
 call "%INSTALLERS_DIR%install_xercesc.bat"^
  --build-dir "%INSTALLATION_DIR%"
+
+rem ============================================================================
+rem -- Download and install Sqlite3 --------------------------------------------
+rem ============================================================================
+
+echo %FILE_N% Installing Sqlite3
+call "%INSTALLERS_DIR%install_sqlite3.bat"^
+ --build-dir "%INSTALLATION_DIR%"
+copy %INSTALLATION_DIR%\sqlite3-install\lib\sqlite3.lib %CARLA_PYTHON_DEPENDENCIES%\lib
+
+rem ============================================================================
+rem -- Download and install PROJ --------------------------------------------
+rem ============================================================================
+
+echo %FILE_N% Installing PROJ
+call "%INSTALLERS_DIR%install_proj.bat"^
+ --build-dir "%INSTALLATION_DIR%"
+copy %INSTALLATION_DIR%\proj-install\lib\proj.lib %CARLA_PYTHON_DEPENDENCIES%\lib
 
 rem ============================================================================
 rem -- Download and install Chrono ----------------------------------------------
@@ -271,6 +290,7 @@ set CMAKE_CONFIG_FILE=%INSTALLATION_DIR%CMakeLists.txt.in
 if not %USE_CHRONO% == true (
 >>"%CMAKE_CONFIG_FILE%" echo   add_compile_options(/GR-^)
 )
+>>"%CMAKE_CONFIG_FILE%" echo   add_definitions(-DBOOST_TYPE_INDEX_FORCE_NO_RTTI_COMPATIBILITY) 
 >>"%CMAKE_CONFIG_FILE%" echo   add_compile_options(/EHsc)
 >>"%CMAKE_CONFIG_FILE%" echo   add_definitions(-DASIO_NO_EXCEPTIONS)
 >>"%CMAKE_CONFIG_FILE%" echo   add_definitions(-DBOOST_NO_EXCEPTIONS)
