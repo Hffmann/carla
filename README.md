@@ -88,6 +88,22 @@ Unfortunately we don't have official instructions to build on Mac yet, please ch
 [buildwindowslink]: https://carla.readthedocs.io/en/latest/build_windows/
 [issue150]: https://github.com/carla-simulator/carla/issues/150
 
+Use with Apollo
+-------------- 
+
+*   Download ZMQ: https://zeromq.org/languages/python/
+*   Running: 
+```sh
+# Terminal A
+# Run worker to connect both ends
+cd ~/carla/PythonAPI/examples
+python3 apollo_worker.py 
+# Terminal B
+# Stablish the control from the Apollo's side
+cd ~/carla/PythonAPI/examples
+python3 apollo_control.py
+```
+	
 Contributing
 ------------
 
